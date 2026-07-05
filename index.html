@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkWise AI | 经营事件工作台</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="workspace">
+        <header class="topbar">
+          <div class="topbar-title">
+            <div class="brand-mark" aria-hidden="true">LW</div>
+            <div>
+              <p class="eyebrow">LinkWise 经营协同</p>
+              <h1>经营事件工作台</h1>
+              <p>围绕具体客户、具体业务节点，完成识别、确认、分派和结果回写。</p>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="ant-btn" type="button" id="openMechanismButton">底层机制</button>
+            <button class="ant-btn" type="button" id="openTerminologyButton">产品术语库</button>
+            <button class="ant-btn ant-btn-primary" type="button" id="runDemoButton">生成本事件协同动作</button>
+          </div>
+        </header>
+
+        <section class="summary-grid" id="summaryCards" aria-label="经营事件汇总"></section>
+
+        <section class="workbench-layout">
+          <aside class="ant-card event-panel" aria-label="经营事件池">
+            <div class="ant-card-head">
+              <div>
+                <p class="eyebrow">事件池</p>
+                <h2>具体经营事件</h2>
+              </div>
+              <span class="ant-tag ant-tag-orange">实例优先</span>
+            </div>
+            <div class="category-tabs" id="categoryTabs" aria-label="事件分类筛选"></div>
+            <div class="event-list" id="eventList"></div>
+          </aside>
+
+          <section class="main-column">
+            <article class="ant-card event-detail-card" aria-label="当前经营事件详情">
+              <div class="event-title-row">
+                <div>
+                  <span class="ant-tag ant-tag-orange" id="eventCategory">收入风险</span>
+                  <span class="ant-tag" id="eventStatus">候选待确认</span>
+                  <h2 id="eventTitle">TechNova｜2026续约窗口风险</h2>
+                  <p id="eventSubtitle">续约剩 42 天，客户反馈与使用数据同时转弱。</p>
+                </div>
+              </div>
+
+              <div class="fact-grid">
+                <article>
+                  <span>客户 / 项目</span>
+                  <strong id="customerName">TechNova 集团</strong>
+                </article>
+                <article>
+                  <span>业务节点</span>
+                  <strong id="eventNode">续约窗口 T-42</strong>
+                </article>
+                <article>
+                  <span>经营影响</span>
+                  <strong id="eventAmount">风险金额 ¥420万</strong>
+                </article>
+                <article>
+                  <span>主责人</span>
+                  <strong id="eventOwner">服务负责人 张岚</strong>
+                </article>
+              </div>
+            </article>
+
+            <article class="ant-card role-card" aria-label="角色视角">
+              <div class="ant-card-head">
+                <div>
+                  <p class="eyebrow" id="scenarioEyebrow">服务视角</p>
+                  <h2 id="scenarioTitle">客户健康干预</h2>
+                </div>
+                <span class="ant-tag" id="scenarioStatus">待确认</span>
+              </div>
+
+              <div class="role-switcher" id="roleSwitcher" aria-label="本事件相关角色"></div>
+
+              <div class="question-box">
+                <span>当前角色要判断</span>
+                <strong id="businessQuestion">这个客户是否需要今天主动干预？</strong>
+              </div>
+
+              <div class="scenario-grid">
+                <article class="scenario-card">
+                  <span>输入信号</span>
+                  <ul id="dataSources"></ul>
+                </article>
+                <article class="scenario-card">
+                  <span>需要补齐的业务信息</span>
+                  <strong id="contextSummary">客户关键人、续约窗口和服务反馈已关联。</strong>
+                  <p id="contextDetail">请确认是否进入正式经营闭环。</p>
+                </article>
+                <article class="scenario-card">
+                  <span>判断建议</span>
+                  <strong id="aiJudgement">建议进入续约风险候选事件。</strong>
+                  <p id="aiReason">多个信号共同指向续约风险，需要业务角色确认。</p>
+                </article>
+                <article class="scenario-card">
+                  <span>关键指标</span>
+                  <div class="metric-stack" id="roleMetrics"></div>
+                </article>
+              </div>
+            </article>
+
+            <article class="ant-card evidence-card" aria-label="证据链">
+              <div class="ant-card-head compact">
+                <div>
+                  <p class="eyebrow">证据链</p>
+                  <h2>为什么这是一条经营事件</h2>
+                </div>
+                <button class="sufficiency-button" type="button" id="evidenceSufficiencyButton">
+                  <span id="confidence">证据充分度 86%</span>
+                </button>
+              </div>
+              <div class="evidence-grid" id="evidenceLedger"></div>
+            </article>
+          </section>
+
+          <aside class="ant-card closure-panel" aria-label="闭环动作">
+            <div class="ant-card-head">
+              <div>
+                <p class="eyebrow">闭环推进</p>
+                <h2 id="closureTitle">服务待办与协同进展</h2>
+              </div>
+            </div>
+            <p class="closure-subtitle" id="closureSubtitle">优先展示当前角色需要确认和处理的动作。</p>
+
+            <ol class="ant-steps" id="runSteps"></ol>
+
+            <div class="step-output">
+              <span>当前步骤输出</span>
+              <strong id="stepOutput">读取客户反馈、CRM 续约窗口、合同金额和使用数据。</strong>
+            </div>
+
+            <div class="action-timeline" id="actionTimeline"></div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div class="term-modal" id="terminologyModal" hidden>
+      <div class="term-mask" data-close-terminology></div>
+      <section class="term-dialog" role="dialog" aria-modal="true" aria-labelledby="termDialogTitle">
+        <header class="term-dialog-head">
+          <div>
+            <p class="eyebrow">产品术语库</p>
+            <h2 id="termDialogTitle">经营事件的定位</h2>
+          </div>
+          <button class="term-close" type="button" aria-label="关闭产品术语库" data-close-terminology>×</button>
+        </header>
+
+        <div class="term-body">
+          <article class="term-highlight">
+            <span>核心定义</span>
+            <strong>经营事件实例，是某一个具体客户、项目、合同、商机或交付节点上，已经或即将影响经营结果的业务变化。</strong>
+            <p>它必须能被识别、确认、分派动作，并追踪闭环结果。</p>
+          </article>
+
+          <div class="term-grid">
+            <article>
+              <h3>它是什么</h3>
+              <ul>
+                <li>有明确对象：客户、项目、合同、商机或确收节点。</li>
+                <li>有明确业务节点：续约窗口、合同签署后、项目交接、初验后、确收前。</li>
+                <li>有经营影响：收入、续约、回款、交付效率、客户健康或经营目标。</li>
+                <li>有跨角色协同必要：需要不止一个角色判断、处置或追踪。</li>
+              </ul>
+            </article>
+
+            <article>
+              <h3>它不是什么</h3>
+              <ul>
+                <li>不是事件分类，例如“收入风险”“交付风险”“营收风险”。</li>
+                <li>不是聚合汇总，例如“3 个战略客户续约风险”。</li>
+                <li>不是单点客户抱怨，除非能关联经营影响和证据链。</li>
+                <li>不是普通部门待办，除非需要经营层面的协同闭环。</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="term-example">
+            <div>
+              <span class="ant-tag ant-tag-orange">正确事件实例</span>
+              <strong>TechNova｜2026续约窗口风险</strong>
+              <p>续约剩 42 天，直播回放问题叠加客户负面反馈、使用下降和 ¥420万续约金额。</p>
+            </div>
+            <div>
+              <span class="ant-tag">只适合做分类/看板</span>
+              <strong>3 个战略客户续约风险</strong>
+              <p>这应该拆成 3 条客户事件，并在看板中聚合统计，不能作为单个闭环事件。</p>
+            </div>
+          </div>
+
+          <article class="term-note">
+            <h3>产品边界</h3>
+            <p>LinkWise 的核心对象是经营事件实例；事件分类用于筛选，经营聚合看板用于统计。真正进入角色确认和跨部门闭环的，必须是具体事件实例。</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="mechanism-modal" id="mechanismModal" hidden>
+      <div class="term-mask" data-close-mechanism></div>
+      <section class="mechanism-dialog" role="dialog" aria-modal="true" aria-labelledby="mechanismDialogTitle">
+        <header class="term-dialog-head">
+          <div>
+            <p class="eyebrow">底层实现逻辑</p>
+            <h2 id="mechanismDialogTitle">经营事件如何进入 LinkWise</h2>
+          </div>
+          <button class="term-close" type="button" aria-label="关闭底层机制说明" data-close-mechanism>×</button>
+        </header>
+
+        <div class="mechanism-body">
+          <section class="mechanism-hero">
+            <div>
+              <span>核心理念</span>
+              <strong>各业务系统和自然协作载体提供原始信号，LinkWise 将信号归一、关联和筛选，生成候选经营事件，再由角色确认进入闭环。</strong>
+            </div>
+            <p>系统不替代 CRM、业管、项目管理、邮件或共享台账，也不要求业务多填一个系统。</p>
+          </section>
+
+          <section class="source-system-panel" aria-label="事件源系统">
+            <div class="panel-title">
+              <p class="eyebrow">Step 1</p>
+              <h3>事件源层：系统传递原始信号</h3>
+            </div>
+            <div class="source-system-grid">
+              <article><strong>CRM</strong><span>商机阶段、客户分层、续约窗口、POC 状态、投标阶段、预计金额</span></article>
+              <article><strong>业管系统</strong><span>合同 KPI、审批节点、流程状态、回款/确收节点、经营口径</span></article>
+              <article><strong>项目管理系统</strong><span>项目计划、交付里程碑、验收状态、项目风险、项目负责人</span></article>
+              <article><strong>工时系统</strong><span>售前、方案、研发、交付、服务投入，用于判断投入产出</span></article>
+              <article><strong>神策系统</strong><span>用户行为、活跃变化、功能使用率、关键流程完成率</span></article>
+              <article><strong>意见反馈系统</strong><span>客户抱怨、需求反馈、满意度问题、体验问题</span></article>
+              <article><strong>生产 Bug 工单</strong><span>生产事故、缺陷等级、影响模块、修复状态、故障次数</span></article>
+              <article><strong>神兵需求管理</strong><span>客户需求、定制诉求、产品排期、研发承诺、需求状态</span></article>
+              <article><strong>邮件 / 快评</strong><span>售前支持申请、POC 申请、需求评估、资源协调、客户背景和截止时间</span></article>
+              <article><strong>神兵云商机台账</strong><span>商机进入时间、跟进事项、输出物、难点、转化状态和持续记录</span></article>
+            </div>
+          </section>
+
+          <section class="pipeline-panel" aria-label="AI 筛选机制">
+            <div class="panel-title">
+              <p class="eyebrow">Step 2-5</p>
+              <h3>AI 筛选机制：从原始信号到候选经营事件</h3>
+            </div>
+            <div class="pipeline-flow">
+              <article>
+                <span>1</span>
+                <strong>信号归一</strong>
+                <p>把不同系统里的客户、商机、合同、项目、功能模块和责任人对齐。</p>
+              </article>
+              <article>
+                <span>2</span>
+                <strong>事件聚类</strong>
+                <p>识别同一客户、同一业务节点、同一时间窗口内的多源信号组合。</p>
+              </article>
+              <article>
+                <span>3</span>
+                <strong>经营影响评分</strong>
+                <p>评估金额、战略客户、签约/续约/确收节点、资源投入和客户反馈强度。</p>
+              </article>
+              <article>
+                <span>4</span>
+                <strong>准入门槛判断</strong>
+                <p>必须有具体对象、业务节点、经营影响、证据链、跨角色动作。</p>
+              </article>
+              <article>
+                <span>5</span>
+                <strong>生成候选事件</strong>
+                <p>展示证据链、影响判断、建议主责人和相关角色，等待业务确认。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="mechanism-rule-grid" aria-label="经营事件准入规则">
+            <article class="rule-card pass">
+              <h3>可以进入 LinkWise</h3>
+              <ul>
+                <li>付费 POC 诉求影响正式签约和定制投入判断。</li>
+                <li>投标支持需要销售、方案、产品、研发共同确认承诺边界。</li>
+                <li>生产事故影响战略客户续约、交付验收或客户汇报。</li>
+              </ul>
+            </article>
+            <article class="rule-card reject">
+              <h3>暂不进入 LinkWise</h3>
+              <ul>
+                <li>单个 Bug 已在研发常规流程内处理，暂无客户经营影响。</li>
+                <li>单点客户抱怨，尚未关联金额、节点、使用数据或客户分层。</li>
+                <li>部门内部待办，不需要跨角色协同和经营结果追踪。</li>
+              </ul>
+            </article>
+          </section>
+
+          <section class="case-chain-panel" aria-label="信号组合示例">
+            <div class="panel-title">
+              <p class="eyebrow">Example</p>
+              <h3>多系统信号如何组合成候选事件</h3>
+            </div>
+            <div class="case-chain-grid">
+              <article>
+                <strong>续约风险</strong>
+                <p>生产 Bug 工单 + 神策使用下降 + CRM 续约窗口 + 意见反馈负面情绪</p>
+                <span>生成：TechNova｜2026续约窗口风险</span>
+              </article>
+              <article>
+                <strong>POC 转化判断</strong>
+                <p>商务邮件 + 商机台账 + CRM 金额 + POC 反馈 + 神兵需求 + 工时投入</p>
+                <span>生成：远航保险｜付费 POC 定制需求转化判断</span>
+              </article>
+              <article>
+                <strong>投标支持</strong>
+                <p>CRM 投标阶段 + 方案材料 + 产品承诺 + 研发排期 + 工时投入</p>
+                <span>生成：投标响应资源协同与承诺边界判断</span>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="raw-data-modal" id="rawDataModal" hidden>
+      <div class="term-mask" data-close-raw-data></div>
+      <section class="raw-data-dialog" role="dialog" aria-modal="true" aria-labelledby="rawDataTitle">
+        <header class="term-dialog-head">
+          <div>
+            <p class="eyebrow">原始数据</p>
+            <h2 id="rawDataTitle">信号源原始记录</h2>
+          </div>
+          <button class="term-close" type="button" aria-label="关闭原始数据" data-close-raw-data>×</button>
+        </header>
+
+        <div class="raw-data-body">
+          <article class="raw-data-summary">
+            <span id="rawDataSystem">来源系统</span>
+            <strong id="rawDataSignal">输入信号</strong>
+            <p id="rawDataReason">该原始记录用于支撑当前经营事件判断。</p>
+          </article>
+
+          <div class="raw-meta-grid" id="rawMetaGrid"></div>
+
+          <section class="raw-record-panel">
+            <div class="panel-title">
+              <p class="eyebrow">Key Records</p>
+              <h3>关键原始数据</h3>
+            </div>
+            <div class="raw-record-list" id="rawRecordList"></div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="sufficiency-modal" id="sufficiencyModal" hidden>
+      <div class="term-mask" data-close-sufficiency></div>
+      <section class="sufficiency-dialog" role="dialog" aria-modal="true" aria-labelledby="sufficiencyTitle">
+        <header class="term-dialog-head">
+          <div>
+            <p class="eyebrow">证据充分度</p>
+            <h2 id="sufficiencyTitle">当前证据链为什么足够支撑业务确认</h2>
+          </div>
+          <button class="term-close" type="button" aria-label="关闭证据充分度说明" data-close-sufficiency>×</button>
+        </header>
+
+        <div class="sufficiency-body">
+          <article class="sufficiency-summary">
+            <span id="sufficiencyEvent">当前经营事件</span>
+            <strong id="sufficiencyScore">证据充分度 86%</strong>
+            <p>它不是 AI 的神秘置信心，而是当前证据链是否足够支撑候选经营事件进入业务角色确认。</p>
+          </article>
+
+          <section class="formula-panel">
+            <div class="panel-title">
+              <p class="eyebrow">Formula</p>
+              <h3>通用计算逻辑</h3>
+            </div>
+            <div class="formula-grid">
+              <article><strong>多源一致性 30%</strong><span>是否来自多个系统，并指向同一客户、节点和时间窗口。</span></article>
+              <article><strong>经营影响强度 25%</strong><span>是否关联金额、战略客户、签约、续约、投标、POC、确收等经营结果。</span></article>
+              <article><strong>时间紧迫性 15%</strong><span>是否临近续约、POC 到期、投标截止、确收周期或客户汇报节点。</span></article>
+              <article><strong>证据质量 20%</strong><span>原始数据是否完整、近期同步、可追溯，并能点回来源系统记录。</span></article>
+              <article><strong>角色确认状态 10%</strong><span>是否已有关键角色待确认、已确认或已补充证据。</span></article>
+            </div>
+          </section>
+
+          <section class="current-score-panel">
+            <div class="panel-title">
+              <p class="eyebrow">Current</p>
+              <h3>当前计算方式</h3>
+            </div>
+            <div class="score-breakdown" id="scoreBreakdown"></div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
